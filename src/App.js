@@ -1,9 +1,19 @@
 import './App.scss';
+import { bancoLocal } from './BancoLocal/BancoLocal';
 
 function App() {
+  // Cria localstorage
+  if (!localStorage['viavarejo']) {
+    bancoLocal.setBanco(bancoLocal.banco);
+  }
+  //-------------------------------------------
+
+
   return (
     <div className="App">
-      Olá Mundo
+      <div className='container'>
+        Olá Mundo
+      </div>
     </div>
   );
 }
