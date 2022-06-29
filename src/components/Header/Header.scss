@@ -1,0 +1,22 @@
+.header {
+    width: 100%;
+    height: 80px;
+    background-color: rgb(221, 221, 221);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buttonHeader button {
+    padding: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 3rem;
+}
+
+.menuHeader button {
+    padding: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 3rem;
+}
