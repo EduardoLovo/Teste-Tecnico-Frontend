@@ -12,7 +12,7 @@ export const Header = () => {
 
             <h2>Controle financeiro</h2>
 
-            <div className='menuHeader'>
+            <div className='buttonHeader'>
                 <button><GiHamburgerMenu /></button>
             </div>
         </div>
