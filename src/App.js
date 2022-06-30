@@ -1,3 +1,4 @@
+import React from 'react';
 import './App.scss';
 import { bancoLocal } from './BancoLocal/BancoLocal';
 import { Header } from './components/Header/Header';
@@ -9,33 +10,82 @@ function App() {
   }
   //-------------------------------------------
 
+  // const [transacao, setTransacao] = (bancoLocal.getBanco())
+  // console.log(transacao);
+
+  const handleSubmit = (event) => {
+    // event.preventDefault();
+
+    // Obtém os dados dos inputs
+    const tipo = event.target.tipo.value;
+    const nome = event.target.nome.value;
+    const valor = (event.target.tipo.value === 'Compra' ? -event.target.valor.value : +event.target.valor.value)
+
+    // Constrói um payload com esses dados
+    const payload = {
+      tipo,
+      nome,
+      valor
+    };
+
+    const banco = bancoLocal.getBanco();
+    banco.push(payload);
+    bancoLocal.setBanco(banco);
+  }
+
+
+  // const [result, setResult] = useState([])
+
+
+  const sum = bancoLocal.getBanco().map(item => item.valor).reduce((prev, curr) => prev + curr, 0);
+
+  console.log(sum);
+
+
 
   return (
-
     <div className="App">
       <Header />
 
       <div className='container'>
         <section className='secInputs'>
-          <div>
-            <label>Tipo de transação</label>
-            <select className='input'>
-              <option>Compra</option>
-              <option>Venda</option>
-            </select>
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="tipo">Tipo de transação</label>
+              <select
+                className='input'
+                type="text"
+                id="tipo"
+                name="tipo"
+              >
+                <option>Compra</option>
+                <option>Venda</option>
+              </select>
+            </div>
 
-          <div>
-            <label>Nome da mercadoria</label>
-            <input className='input' />
-          </div>
+            <div>
+              <label htmlFor="nome">Nome da mercadoria</label>
+              <input
+                className='input'
+                type="text"
+                id="nome"
+                name="nome"
+              />
+            </div>
 
-          <div>
-            <label>Valor</label>
-            <input className='input' placeholder='R$ 0,00' />
-          </div>
+            <div>
+              <label htmlFor="valor">Valor</label>
+              <input
+                className='input'
+                placeholder='R$ 0,00'
+                type="number"
+                id="valor"
+                name="valor"
+              />
+            </div>
 
-          <button>Adicionar transação</button>
+            <button type='submit'>Adicionar transação</button>
+          </form>
         </section>
 
         <hr className='lineCenter' />
@@ -52,40 +102,29 @@ function App() {
             <hr className='line' />
 
             <div >
-              <div className='divResults'>
-                <p>+ Lorem ipsum</p>
-                <label>R$ 12.999,99</label>
-              </div>
-              <hr className='line' />
-              <div className='divResults'>
-                <p>- Lorem ipsum</p>
-                <label>R$ 99,99</label>
-              </div>
-              <hr className='line' />
-              <div className='divResults'>
-                <p>+ Lorem ipsum</p>
-                <label>R$ 9,99</label>
-              </div>
-
-
-
-
-
-              <hr className='line' />
+              {bancoLocal.getBanco().reverse().map((transacao, index) => (
+                <div key={index}>
+                  <div className='divResults'>
+                    <p>{transacao.tipo === 'Compra' ? '+' : '-'} {transacao.nome}</p>
+                    <label>R$ {Math.abs(transacao.valor)}</label>
+                  </div>
+                  <hr className='line' />
+                </div>
+              ))
+              }
               <hr className='line' />
             </div>
 
             <div className='subtittle'>
               <label>Total</label>
-              <label>R$ 1212</label>
+              <label>R$ {sum}</label>
             </div>
             <div className='resutlFinal'>
-              <p>[Lucro]</p>
+              <p>[{sum >= 0 ? 'Lucro' : 'Prejuizo'}]</p>
             </div>
           </div>
         </section>
       </div>
-
     </div>
   );
 }
