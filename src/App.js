@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import { bancoLocal } from './BancoLocal/BancoLocal';
 import { Header } from './components/Header/Header';
@@ -10,36 +10,50 @@ function App() {
   }
   //-------------------------------------------
 
-  // const [transacao, setTransacao] = (bancoLocal.getBanco())
-  // console.log(transacao);
+  const [transacoes, setTransacoes] = useState([])
 
   const handleSubmit = (event) => {
-    // event.preventDefault();
+    event.preventDefault()
 
-    // Obtém os dados dos inputs
-    const tipo = event.target.tipo.value;
-    const nome = event.target.nome.value;
-    const valor = (event.target.tipo.value === 'Compra' ? -event.target.valor.value : +event.target.valor.value)
+    if (!event.target.nome.value || !event.target.valor.value || !event.target.tipo.value) {
+      alert('campo vazio')
+    } else {
+      const tipo = event.target.tipo.value;
+      const nome = event.target.nome.value;
+      const valor = (event.target.tipo.value === 'Compra' ? +event.target.valor.value : -event.target.valor.value)
 
-    // Constrói um payload com esses dados
-    const payload = {
-      tipo,
-      nome,
-      valor
-    };
+      // Constrói um payload com esses dados
+      const payload = {
+        tipo,
+        nome,
+        valor
+      };
 
-    const banco = bancoLocal.getBanco();
-    banco.push(payload);
-    bancoLocal.setBanco(banco);
+      const banco = bancoLocal.getBanco();
+      banco.push(payload);
+      bancoLocal.setBanco(banco);
+
+      event.target.tipo.value = ''
+      event.target.nome.value = ''
+      event.target.valor.value = ''
+    }
+
+    // bancoLocal.getBanco()
+
+    const response = bancoLocal.getBanco();
+    setTransacoes(response);
   }
-
-
-  // const [result, setResult] = useState([])
-
 
   const sum = bancoLocal.getBanco().map(item => item.valor).reduce((prev, curr) => prev + curr, 0);
 
-  console.log(sum);
+  // Tipo de codigo para receber requisição do backend
+  useEffect(() => {
+    const loadData = () => {
+      const response = bancoLocal.getBanco();
+      setTransacoes(response);
+    }
+    loadData()
+  }, [])
 
 
 
@@ -58,6 +72,7 @@ function App() {
                 id="tipo"
                 name="tipo"
               >
+                <option value='' placeholder='...'></option>
                 <option>Compra</option>
                 <option>Venda</option>
               </select>
@@ -70,6 +85,7 @@ function App() {
                 type="text"
                 id="nome"
                 name="nome"
+
               />
             </div>
 
@@ -81,6 +97,7 @@ function App() {
                 type="number"
                 id="valor"
                 name="valor"
+                step="0.01"
               />
             </div>
 
@@ -102,11 +119,11 @@ function App() {
             <hr className='line' />
 
             <div >
-              {bancoLocal.getBanco().reverse().map((transacao, index) => (
+              {transacoes.slice(0).reverse().map((transacao, index) => (
                 <div key={index}>
                   <div className='divResults'>
-                    <p>{transacao.tipo === 'Compra' ? '+' : '-'} {transacao.nome}</p>
-                    <label>R$ {Math.abs(transacao.valor)}</label>
+                    <p>{transacao.tipo === 'Compra' ? '-' : '+'} {transacao.nome}</p>
+                    <label>R$ {Math.abs(transacao.valor).toFixed(2).replace(".", ",")}</label>
                   </div>
                   <hr className='line' />
                 </div>
@@ -117,7 +134,7 @@ function App() {
 
             <div className='subtittle'>
               <label>Total</label>
-              <label>R$ {sum}</label>
+              <label>R$ {sum.toFixed(2).replace(".", ",")}</label>
             </div>
             <div className='resutlFinal'>
               <p>[{sum >= 0 ? 'Lucro' : 'Prejuizo'}]</p>
