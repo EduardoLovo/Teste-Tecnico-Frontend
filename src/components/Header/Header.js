@@ -5,6 +5,7 @@ import { TiThLargeOutline } from 'react-icons/ti';
 
 export const Header = () => {
     return (
+
         <div className='header'>
             <div className='buttonHeader'>
                 <button><TiThLargeOutline /></button>
@@ -16,5 +17,7 @@ export const Header = () => {
                 <button><GiHamburgerMenu /></button>
             </div>
         </div>
+
+
     )
 }
